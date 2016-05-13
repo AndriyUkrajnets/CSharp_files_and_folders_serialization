@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7E96E52F-9BC1-49F8-BA84-06E3CA16F3F3}</ProjectGuid>
+    <ProjectGuid>{49ACD213-B64C-4E5F-9DEF-9D17CA5CC341}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AllFilesInOne</RootNamespace>
