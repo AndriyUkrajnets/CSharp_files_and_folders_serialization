@@ -22,30 +22,57 @@ namespace AllFilesInOne
         [STAThread]
         static void Main(string[] args)
         {
-            Console.WriteLine("Choose folder for serialization:");
-            FolderBrowserDialog fbd_1 = new FolderBrowserDialog();
-            DialogResult result = fbd_1.ShowDialog();
-            string baseDirectoryPath = fbd_1.SelectedPath; // папка, в якій беремо файли та папки для серіалізації
+            Console.WriteLine("What do you want to do?");
+            DialogResult dialogResult = MessageBox.Show("Serialize ?", "What do you want to do?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                Console.WriteLine("Choose folder for serialization:");
+                FolderBrowserDialog fbd_1 = new FolderBrowserDialog();
+                DialogResult result = fbd_1.ShowDialog();
+                string baseDirectoryPath = fbd_1.SelectedPath; // папка, в якій беремо файли та папки для серіалізації
 
-            Console.WriteLine("Choose folder for files deserialized:");
-            FolderBrowserDialog fbd_2 = new FolderBrowserDialog();
-            DialogResult result_2 = fbd_2.ShowDialog();
-            string newDirectoryPath = fbd_2.SelectedPath; // папка, в яку будуть внесені файли, після десеріалізації
+                // папка, в яку буде внесено файли з папками і підпапками (бінарна серіалізація)
+                string outputSerializedFilePath = Path.GetDirectoryName(baseDirectoryPath) + @"\serialized.dat";
 
-            // папка, в яку буде внесено файлл з папками і підпапками (бінарна серіалізація)
-            string outputSerializedFilePath = Path.GetDirectoryName(baseDirectoryPath) + @"\serialized.dat";
+                // Виклик методу серіалізації
+                FilesAndFolderSerializer(baseDirectoryPath, outputSerializedFilePath);
 
-            Console.WriteLine("Input Folder: {0}", baseDirectoryPath);
-            Console.WriteLine("Output Folder: {0}", newDirectoryPath);
-            Console.WriteLine("Serialized file: {0}", outputSerializedFilePath);
+                Console.WriteLine("We had saved selected folder with files and sub folders into one file");
+                Console.WriteLine("Input Folder: {0}", baseDirectoryPath);
+                Console.WriteLine("Serialized file: {0}", outputSerializedFilePath);
+                Console.WriteLine("Ready!");
+                Console.ReadLine();
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                Console.WriteLine("What do you want to do?");
+                DialogResult dialogResult_2 = MessageBox.Show("Deserialize ?", "What do you want to do?", MessageBoxButtons.YesNo);
+                if (dialogResult_2 == DialogResult.Yes)
+                {
+                    Console.WriteLine("Choose folder where we will put unpacked folders and files:");
+                    FolderBrowserDialog fbd_2 = new FolderBrowserDialog();
+                    DialogResult result_2 = fbd_2.ShowDialog();
+                    string newDirectoryPath = fbd_2.SelectedPath; // папка, в яку будуть внесені файли, після десеріалізації
 
-            // Виклик методу серіалізації
-            FilesAndFolderSerializer(baseDirectoryPath, outputSerializedFilePath, newDirectoryPath);
-            // Виклик методу десеріалізації
-            FilesAndFolderDeserializer(outputSerializedFilePath, newDirectoryPath);
+                    Console.WriteLine("Choose serialized file:");
+                    //Stream myStream = null;
+                    OpenFileDialog openFileDialog1 = new OpenFileDialog();
+                    DialogResult result_3 = openFileDialog1.ShowDialog();
+                    string outputSerializedFilePath = openFileDialog1.InitialDirectory + openFileDialog1.FileName;
 
-            Console.WriteLine("Ready!");
-            Console.ReadLine();
+                    // Виклик методу десеріалізації
+                    FilesAndFolderDeserializer(outputSerializedFilePath, newDirectoryPath);
+                    Console.WriteLine("Output Folder: {0}", newDirectoryPath);
+                    Console.WriteLine("Serialized file: {0}", outputSerializedFilePath);
+                    Console.WriteLine("Ready!");
+                    Console.ReadLine();
+                }
+                else if (dialogResult_2 == DialogResult.No)
+                {
+                    Console.WriteLine("So, threre is nothing to do!");
+                    Console.ReadLine();
+                }
+            }
         }
 
         // метод GetAllFiles створює список файлів, які містяться в папці і підпапках
@@ -73,7 +100,7 @@ namespace AllFilesInOne
 
         // Серіалізація, в результаті якої створюється список filesRead, де
         // кожному pathShort(шлях до файлу) відповідає bytes(вміст файлу) 
-        private static void FilesAndFolderSerializer(string baseDirectoryPath, string outputSerializedFilePath, string newDirectoryPath)
+        private static void FilesAndFolderSerializer(string baseDirectoryPath, string outputSerializedFilePath)
         {
             List<string> filesOnly = GetAllFiles(baseDirectoryPath);
             List<FileRecord> filesRead = new List<FileRecord>();
