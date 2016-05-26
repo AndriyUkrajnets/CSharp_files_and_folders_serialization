@@ -3,3 +3,5 @@ E:\IT&Web Revolution\Visual Studio 2012\Projects\Save_folder_with_files_into_one
 E:\IT&Web Revolution\Visual Studio 2012\Projects\Save_folder_with_files_into_one_file\AllFilesInOne\AllFilesInOne\obj\Debug\AllFilesInOne.csprojResolveAssemblyReference.cache
 E:\IT&Web Revolution\Visual Studio 2012\Projects\Save_folder_with_files_into_one_file\AllFilesInOne\AllFilesInOne\obj\Debug\AllFilesInOne.exe
 E:\IT&Web Revolution\Visual Studio 2012\Projects\Save_folder_with_files_into_one_file\AllFilesInOne\AllFilesInOne\obj\Debug\AllFilesInOne.pdb
+C:\Users\Admin\Documents\GitHub\CSharp_files_and_folders_serialization\AllFilesInOne\AllFilesInOne\obj\Debug\AllFilesInOne.exe
+C:\Users\Admin\Documents\GitHub\CSharp_files_and_folders_serialization\AllFilesInOne\AllFilesInOne\obj\Debug\AllFilesInOne.pdb

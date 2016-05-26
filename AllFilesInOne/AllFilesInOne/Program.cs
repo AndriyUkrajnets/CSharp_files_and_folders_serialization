@@ -17,6 +17,14 @@ namespace AllFilesInOne
         public byte[] fileContent;
     }
 
+    // Application as input takes folder (User can select folder) - baseDirectoryPath
+    // Application saves selected folder with files and sub folders into one file - serialized.dat
+    // binary serialization is used
+
+    // Application as input takes file with folder structure from previous point and selects folder to deserialize - newDirectoryPath
+    // System unpacks the folders and files into the selected folder. 
+    // File/Folder/Sub Folder is kept
+
     class Program
     {
         [STAThread]
@@ -29,12 +37,10 @@ namespace AllFilesInOne
                 Console.WriteLine("Choose folder for serialization:");
                 FolderBrowserDialog fbd_1 = new FolderBrowserDialog();
                 DialogResult result = fbd_1.ShowDialog();
-                string baseDirectoryPath = fbd_1.SelectedPath; // папка, в якій беремо файли та папки для серіалізації
+                string baseDirectoryPath = fbd_1.SelectedPath;
 
-                // папка, в яку буде внесено файли з папками і підпапками (бінарна серіалізація)
                 string outputSerializedFilePath = Path.GetDirectoryName(baseDirectoryPath) + @"\serialized.dat";
 
-                // Виклик методу серіалізації
                 FilesAndFolderSerializer(baseDirectoryPath, outputSerializedFilePath);
 
                 Console.WriteLine("We had saved selected folder with files and sub folders into one file");
@@ -52,15 +58,13 @@ namespace AllFilesInOne
                     Console.WriteLine("Choose folder where we will put unpacked folders and files:");
                     FolderBrowserDialog fbd_2 = new FolderBrowserDialog();
                     DialogResult result_2 = fbd_2.ShowDialog();
-                    string newDirectoryPath = fbd_2.SelectedPath; // папка, в яку будуть внесені файли, після десеріалізації
+                    string newDirectoryPath = fbd_2.SelectedPath;
 
                     Console.WriteLine("Choose serialized file:");
-                    //Stream myStream = null;
                     OpenFileDialog openFileDialog1 = new OpenFileDialog();
                     DialogResult result_3 = openFileDialog1.ShowDialog();
                     string outputSerializedFilePath = openFileDialog1.InitialDirectory + openFileDialog1.FileName;
 
-                    // Виклик методу десеріалізації
                     FilesAndFolderDeserializer(outputSerializedFilePath, newDirectoryPath);
                     Console.WriteLine("Output Folder: {0}", newDirectoryPath);
                     Console.WriteLine("Serialized file: {0}", outputSerializedFilePath);
@@ -75,8 +79,6 @@ namespace AllFilesInOne
             }
         }
 
-        // метод GetAllFiles створює список файлів, які містяться в папці і підпапках
-        // обраної папки. Список вказується зі шляхом до цих файлів
         public static List<string> GetAllFiles(string Dir)
         {
             List<string> filesWithPath = new List<string>();
@@ -98,19 +100,14 @@ namespace AllFilesInOne
             return filesWithPath;
         }
 
-        // Серіалізація, в результаті якої створюється список filesRead, де
-        // кожному pathShort(шлях до файлу) відповідає bytes(вміст файлу) 
         private static void FilesAndFolderSerializer(string baseDirectoryPath, string outputSerializedFilePath)
         {
             List<string> filesOnly = GetAllFiles(baseDirectoryPath);
             List<FileRecord> filesRead = new List<FileRecord>();
             foreach (var path in filesOnly)
             {
-                // читаємо вміст файлу в байтах
                 var bytes = File.ReadAllBytes(path);
-                // створюємо котороткий шлях до файлу так, щоб приєднати до шляху обраної папки
                 var pathShort = path.Substring(baseDirectoryPath.Length);
-                // створюємо об'якт серіалізованого класу FileRecord з парамертами: шлях до файлу та вміст файлу
                 var record = new FileRecord { fileContent = bytes, filePath = pathShort };
                 filesRead.Add(record);
             }
@@ -119,7 +116,6 @@ namespace AllFilesInOne
             BinaryFormatter formatter = new BinaryFormatter();
             try
             {
-                // створюємо файл, в який внесено файли з папками і підпапками (бінарна серіалізація)
                 formatter.Serialize(fs, filesRead);
             }
             catch (SerializationException e)
@@ -133,8 +129,6 @@ namespace AllFilesInOne
             }
         }
 
-        // Десеріалізація. Беремо файл з файловою структурою з попередньої точки
-        // та розпаковуємо папки та файли у вказану папку
         static void FilesAndFolderDeserializer(string outputSerializedFilePath, string newDirectoryPath)
         {
             List<FileRecord> files_deserialized = null;
@@ -160,9 +154,9 @@ namespace AllFilesInOne
                 string outDir = Path.GetDirectoryName(outPath);
                 if (!Directory.Exists(outDir))
                 {
-                    Directory.CreateDirectory(outDir); // створюємо папку, якщо такої ще немає
+                    Directory.CreateDirectory(outDir);
                 }
-                File.WriteAllBytes(outPath, fileRecord.fileContent); // записуємо вміст у відповідний файл
+                File.WriteAllBytes(outPath, fileRecord.fileContent);
             }
         }
     }
